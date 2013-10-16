@@ -1,0 +1,63 @@
+import java.awt.Graphics;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.JPanel;
+
+
+/**
+ * This class provides a view of a MandelBrot set Model object and responds to 
+ * the mouse clicks, which indicate what subregion the user wishes to select.
+ * 
+ * @author Alexander Smith && Nicholas Davis: alexander_smith@umail.ucsb.edu, ndavis@umail.ucsb.edu
+ */
+public class ImageJPanel extends JPanel implements MouseListener
+{
+    private final Model model;
+    private ModelJPanel modelJPanel;
+    private int imageSize;
+    
+    ImageJPanel( Model model ) 
+    { 
+        this.model = model;
+        initialize(); 
+    }
+    
+    private void initialize()
+    { 
+        addMouseListener( this ); // add this to the set of objects listening for MouseEvent objects.
+        imageSize = model.getNumPixels();
+        model.setImage();
+    }
+    
+    void setModelJPanel( ModelJPanel modelJPanel ) { this.modelJPanel = modelJPanel; }
+    
+    @Override
+    public void paintComponent( Graphics graphics )
+    {
+    	System.out.println("paintcomponent is called!");
+        super.paintComponent( graphics );
+        graphics.drawImage( model.getBufferedImage(), 0, 0, imageSize, imageSize, this);
+        modelJPanel.view();
+    }
+    
+    //  Mouselistener implementation
+    @Override
+    public void mousePressed( MouseEvent mouseEvent ) {}
+
+    @Override
+    public void mouseReleased( MouseEvent mouseEvent ) {}
+
+    @Override
+    public void mouseEntered( MouseEvent mouseEvent ) {}
+
+    @Override
+    public void mouseExited( MouseEvent mouseEvent ) {}
+
+    @Override
+    public void mouseClicked( MouseEvent mouseEvent )
+    {
+        model.recenter( mouseEvent.getX(), mouseEvent.getY() );
+        repaint();
+    }
+}
